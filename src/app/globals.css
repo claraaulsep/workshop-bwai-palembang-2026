@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+/* ============================================
+   AAP-64 PALETTE VARIABLES
+   ============================================ */
+:root {
+  /* Dark/Shadow */
+  --aap-darkest:    #060608;
+  --aap-dark1:      #141013;
+  --aap-dark2:      #221c1a;
+  --aap-dark3:      #242234;
+  --aap-dark4:      #403353;
+
+  /* Reds */
+  --aap-red-dark:   #73172d;
+  --aap-red:        #b4202a;
+  --aap-red-bright: #df3e23;
+  --aap-orange:     #fa6a0a;
+
+  /* Yellows / Gold */
+  --aap-amber:      #f9a31b;
+  --aap-yellow:     #ffd541;
+  --aap-yellow-lt:  #fffc40;
+  --aap-lime:       #d6f264;
+
+  /* Greens */
+  --aap-green-lt:   #9cdb43;
+  --aap-green:      #59c135;
+  --aap-green-mid:  #14a02e;
+  --aap-green-dark: #1a7a3e;
+  --aap-forest:     #24523b;
+  --aap-deep-green: #122020;
+
+  /* Blues */
+  --aap-navy:       #143464;
+  --aap-blue:       #285cc4;
+  --aap-sky:        #249fde;
+  --aap-cyan:       #20d6c7;
+  --aap-ice:        #a6fcdb;
+
+  /* Pinks / Purples */
+  --aap-pink:       #e86a73;
+  --aap-magenta:    #bc4a9b;
+  --aap-purple:     #793a80;
+
+  /* Skin / Warm */
+  --aap-cream:      #fef3c0;
+  --aap-skin-lt:    #fad6b8;
+  --aap-skin:       #f5a097;
+  --aap-brown-lt:   #dba463;
+  --aap-brown:      #bb7547;
+  --aap-brown-dark: #71413b;
+
+  /* Greys */
+  --aap-white:      #ffffff;
+  --aap-grey-lt:    #dae0ea;
+  --aap-grey-mid:   #b3b9d1;
+  --aap-grey:       #8b93af;
+  --aap-grey-dark:  #6d758d;
+  --aap-slate:      #4a5462;
+  --aap-slate-dark: #333941;
+
+  /* App Semantic Mapping */
+  --color-bg:       var(--aap-navy);
+  --color-panel:    var(--aap-dark3);
+  --color-text:     var(--aap-grey-lt);
+  --color-heading:  var(--aap-white);
+  --color-gold:     var(--aap-yellow);
+  --color-accent:   var(--aap-sky);
+  --color-success:  var(--aap-green);
+  --color-danger:   var(--aap-red);
+  --color-locked:   var(--aap-slate);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+@theme inline {
+  --color-gold: var(--aap-yellow);
+  --font-pixel: var(--font-press-start), monospace;
+}
+
+* {
+  image-rendering: pixelated;
+}
+
+body {
+  font-family: var(--font-pixel), monospace;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* ============================================
+   PIXEL ART PANEL - The main UI "block" style
+   Mimics raised Mario/8-bit game UI boxes
+   ============================================ */
+.pixel-panel {
+  background: var(--aap-dark3);
+  border: 4px solid var(--aap-grey-lt);
+  /* Raised 3D pixel edge effect */
+  box-shadow:
+    inset -4px -4px 0px 0px var(--aap-dark1),
+    inset 4px 4px 0px 0px var(--aap-slate),
+    4px 4px 0px 0px var(--aap-darkest);
+  padding: 1rem;
+}
+
+.pixel-panel-gold {
+  background: var(--aap-dark3);
+  border: 4px solid var(--aap-yellow);
+  box-shadow:
+    inset -4px -4px 0px 0px #9a7000,
+    inset 4px 4px 0px 0px #fffc40,
+    4px 4px 0px 0px var(--aap-darkest);
+}
+
+.pixel-panel-green {
+  background: var(--aap-forest);
+  border: 4px solid var(--aap-green);
+  box-shadow:
+    inset -4px -4px 0px 0px var(--aap-deep-green),
+    inset 4px 4px 0px 0px var(--aap-green-lt),
+    4px 4px 0px 0px var(--aap-darkest);
+}
+
+.pixel-panel-blue {
+  background: var(--aap-navy);
+  border: 4px solid var(--aap-sky);
+  box-shadow:
+    inset -4px -4px 0px 0px #0a1f40,
+    inset 4px 4px 0px 0px var(--aap-cyan),
+    4px 4px 0px 0px var(--aap-darkest);
+}
+
+/* ============================================
+   PIXEL BUTTON
+   ============================================ */
+.pixel-btn {
+  border: 4px solid var(--aap-grey-lt);
+  background: var(--aap-slate);
+  color: var(--aap-white);
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: transform 0.05s, box-shadow 0.05s;
+  box-shadow:
+    inset -2px -2px 0px 0px var(--aap-slate-dark),
+    inset 2px 2px 0px 0px var(--aap-grey),
+    2px 2px 0px 0px var(--aap-darkest);
+}
+.pixel-btn:hover {
+  background: var(--aap-blue);
+  border-color: var(--aap-sky);
+}
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.pixel-btn-gold {
+  border: 4px solid var(--aap-yellow);
+  background: var(--aap-amber);
+  color: var(--aap-darkest);
+  box-shadow:
+    inset -2px -2px 0px 0px #a05000,
+    inset 2px 2px 0px 0px var(--aap-yellow-lt),
+    2px 2px 0px 0px var(--aap-darkest);
+}
+.pixel-btn-gold:hover {
+  background: var(--aap-yellow);
+}
+
+/* ============================================
+   PIXEL INPUT
+   ============================================ */
+.pixel-input {
+  background: var(--aap-dark2);
+  border: 4px solid var(--aap-grey-dark);
+  color: var(--aap-white);
+  padding: 8px 12px;
+  outline: none;
+  font-family: inherit;
+  box-shadow: inset 2px 2px 0px 0px var(--aap-darkest);
+}
+.pixel-input:focus {
+  border-color: var(--aap-sky);
+  box-shadow: inset 2px 2px 0px 0px var(--aap-darkest), 0 0 0 2px var(--aap-blue);
+}
+
+/* ============================================
+   PIXEL TEXT
+   ============================================ */
+.text-gold   { color: var(--aap-yellow); }
+.text-sky    { color: var(--aap-sky); }
+.text-green  { color: var(--aap-green-lt); }
+.text-red    { color: var(--aap-red-bright); }
+.text-locked { color: var(--aap-grey-dark); }
+
+.pixel-text-shadow {
+  text-shadow: 2px 2px 0px var(--aap-darkest);
+}
+.pixel-text-shadow-gold {
+  text-shadow: 2px 2px 0px #8a5c00;
+}
+
+/* ============================================
+   QUEST STATES
+   ============================================ */
+/* Shimmering gold for completed quests */
+.shimmer-gold {
+  animation: shimmer 2s infinite alternate;
+}
+@keyframes shimmer {
+  0%   { box-shadow: inset -4px -4px 0 #9a7000, inset 4px 4px 0 #fffc40, 4px 4px 0 #060608, 0 0 8px #ffd541; }
+  100% { box-shadow: inset -4px -4px 0 #9a7000, inset 4px 4px 0 #fffc40, 4px 4px 0 #060608, 0 0 24px #ffd541, 0 0 40px rgba(255,213,65,0.4); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Scanline overlay for retro feel */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.12) 2px,
+    rgba(0,0,0,0.12) 4px
+  );
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ============================================
+   GRASS PLATFORM (decorative)
+   ============================================ */
+.pixel-grass-top {
+  border-top: 8px solid var(--aap-green);
+  background: var(--aap-forest);
+}
+
+/* ============================================
+   NEON GLOW
+   ============================================ */
+.neon-glow-blue {
+  box-shadow: 0 0 8px var(--aap-sky), 0 0 20px var(--aap-blue);
+}
+.neon-glow-green {
+  box-shadow: 0 0 8px var(--aap-green-lt), 0 0 20px var(--aap-green-mid);
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+.pixel-progress-track {
+  background: var(--aap-dark1);
+  border: 4px solid var(--aap-grey-dark);
+  height: 20px;
+  padding: 2px;
+  box-shadow: inset 2px 2px 0px var(--aap-darkest);
+}
+.pixel-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--aap-green-dark), var(--aap-green-lt));
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--aap-dark2); border-left: 4px solid var(--aap-slate); }
+::-webkit-scrollbar-thumb { background: var(--aap-blue); border: 2px solid var(--aap-sky); }

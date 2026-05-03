@@ -35,8 +35,9 @@ RAG (Retrieval Augmented Generation) adalah teknik di mana kita **memberikan dok
 [LLM menjawab berdasarkan isi file]
 ```
 
-> *Diagram RAG — COMING SOON!*
-> ![Diagram RAG](COMING_SOON)
+> *Diagram RAG — lihat gambar di bawah:*
+
+![Workflow RAG](images/Workflow.png)
 
 ---
 
@@ -63,7 +64,7 @@ Permanent Inventory membaca file dari folder **`public/knowledge/`** di project 
 1. Buka folder `public/knowledge/` di project kamu
 2. Tambahkan file `.csv` atau `.txt` ke folder tersebut
 3. Restart development server (`Ctrl+C` lalu `npm run dev`)
-4. File akan otomatis muncul di panel **📦 PERMANENT INVENTORY** di halaman chatbot
+4. File akan otomatis muncul di panel **PERMANENT INVENTORY** di halaman chatbot
 
 ### Format File yang Disarankan
 
@@ -86,8 +87,7 @@ Prompt Engineering,Seni membuat instruksi yang efektif untuk memandu output LLM,
 4. File yang aktif ditandai dengan border kuning dan tanda ✓
 5. Kamu bisa mengaktifkan **beberapa file sekaligus**
 
-> *Screenshot permanent inventory panel — COMING SOON!*
-> ![Permanent Inventory](COMING_SOON)
+![Permanent Inventory](images/Web-Permanentinventory.png)
 
 > Mengaktifkan file permanent untuk pertama kali akan menyelesaikan **Main Quest: "Activate Permanent Knowledge Base"**!
 
@@ -136,9 +136,6 @@ Apa kegunaan Prompt Engineering?
 > [![Demo RAG Module 2](COMING_SOON)](COMING_SOON)
 
 Saat knowledge base aktif, kamu akan melihat indikator **✦ RAG ACTIVE** di panel chat counter.
-
-> *Screenshot RAG active indicator — COMING SOON!*
-> ![RAG Active Indicator](COMING_SOON)
 
 ### Side Quest: "Upload file directly to chatbot"
 

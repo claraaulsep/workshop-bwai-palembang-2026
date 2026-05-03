@@ -4,6 +4,7 @@ import "./globals.css";
 import { QuestProvider } from "@/context/QuestContext";
 import Sidebar from "@/components/Navigation";
 import AchievementToast from "@/components/AchievementToast";
+import LoginGate from "@/components/LoginGate";
 
 const pressStart2P = Press_Start_2P({
   weight: "400",
@@ -22,9 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const connectedServices = {
-    gemini: !!process.env.GEMINI_API_KEY,
-    groq: !!process.env.GROQ_API_KEY,
-    serper: !!process.env.SERPER_API_KEY,
+    gemini:       !!process.env.GEMINI_API_KEY,
+    groq:         !!process.env.GROQ_API_KEY,
+    serper:       !!process.env.SERPER_API_KEY,
+    loginEnabled: !!(process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD),
   };
 
   return (
@@ -53,22 +55,24 @@ export default function RootLayout({
         }} />
 
         <QuestProvider initialConnections={connectedServices}>
-          <div style={{ display: 'flex', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
-            {/* Sidebar — fixed, 60px collapsed / 200px expanded */}
-            <Sidebar />
+          <LoginGate loginEnabled={connectedServices.loginEnabled}>
+            <div style={{ display: 'flex', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
+              {/* Sidebar — fixed, 60px collapsed / 200px expanded */}
+              <Sidebar />
 
-            {/* Main content — offset by sidebar width (60px collapsed) */}
-            <main style={{
-              flex: 1,
-              marginLeft: '60px',
-              padding: '32px 32px 48px',
-              minHeight: '100vh',
-              maxWidth: 'calc(100vw - 60px)',
-              overflowX: 'hidden',
-            }}>
-              {children}
-            </main>
-          </div>
+              {/* Main content — offset by sidebar width (60px collapsed) */}
+              <main style={{
+                flex: 1,
+                marginLeft: '60px',
+                padding: '32px 32px 48px',
+                minHeight: '100vh',
+                maxWidth: 'calc(100vw - 60px)',
+                overflowX: 'hidden',
+              }}>
+                {children}
+              </main>
+            </div>
+          </LoginGate>
           <AchievementToast />
         </QuestProvider>
       </body>

@@ -29,8 +29,77 @@
 [Ditampilkan di Battle Log]
 ```
 
-> *Diagram arsitektur — COMING SOON!*
-> ![Diagram Alur](COMING_SOON)
+> *Diagram arsitektur — lihat gambar di bawah:*
+
+![Workflow Diagram](images/Workflow.png)
+
+---
+
+---
+
+## Instalasi Environment Website
+
+### Clone Repository
+
+```bash
+git clone [COMING SOON!]
+cd workshop-bwai-palembang-2026
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+Proses ini akan mengunduh semua package yang dibutuhkan. Butuh beberapa menit tergantung koneksi internet.
+
+### Setup File Environment
+
+Buat file `.env.local` di root project:
+```bash
+# Windows (Command Prompt)
+copy .env.local.example .env.local
+
+# macOS / Linux
+cp .env.local.example .env.local
+```
+
+Kemudian buka file `.env.local` dan isi dengan API key yang sudah kamu dapatkan:
+```env
+GEMINI_API_KEY=AIza...
+GROQ_API_KEY=gsk_...
+SERPER_API_KEY=...
+```
+
+> Untuk saat ini, cukup isi `GEMINI_API_KEY` dulu. Key lainnya bisa ditambahkan nanti sesuai modul.
+
+### Jalankan Development Server
+
+```bash
+npm run dev
+```
+
+Buka browser dan akses: **http://localhost:3000**
+
+Kamu seharusnya melihat **AI Quest Dashboard** dengan tampilan 8-bit. Selamat, environment kamu sudah siap!
+
+---
+
+## Verifikasi Modul 0
+
+Checklist sebelum lanjut ke Module 1:
+
+- [ ] Node.js v18+ terinstall (`node --version`)
+- [ ] npm terinstall (`npm --version`)
+- [ ] Repository sudah di-clone
+- [ ] `npm install` berhasil dijalankan
+- [ ] File `.env.local` sudah dibuat dan minimal `GEMINI_API_KEY` sudah diisi
+- [ ] `npm run dev` berhasil dan website terbuka di `localhost:3000`
+
+---
+
+> **Selanjutnya:** [Module 1 — Inference Pipeline: Chat Completion Interface](../Module%201/Module%201%20-%20Quickstart.md)
 
 ---
 
@@ -98,8 +167,7 @@ npm run dev
 
 Buka **http://localhost:3000** di browser, lalu navigasi ke halaman **CHATBOT** menggunakan sidebar kiri.
 
-> *Screenshot halaman chatbot — COMING SOON!*
-> ![Halaman Chatbot](COMING_SOON)
+![Halaman Chatbot](images/Web-Dashboard.png)
 
 ---
 
@@ -121,8 +189,7 @@ Di bagian atas halaman chatbot, kamu akan melihat panel **SELECT CHAMPION** yang
 
 Model yang **terkunci (LOCKED)** akan berwarna gelap dan tidak bisa diklik — kamu perlu mengisi API key yang sesuai di `.env.local` terlebih dahulu.
 
-> *Screenshot model selector — COMING SOON!*
-> ![Model Selector](COMING_SOON)
+![Model Selector](images/Web-Model.png)
 
 ### BATTLE LOG (Riwayat Chat)
 
@@ -138,7 +205,7 @@ Aplikasi ini menyimpan **maksimal 5 giliran terakhir** (5 pasang pesan user+AI =
 
 ## Kustomisasi System Prompt
 
-Di panel kiri chatbot, klik **"⚙ SYSTEM MSG"** untuk membuka editor system prompt.
+Di panel kiri chatbot, klik **"SYSTEM MSG"** untuk membuka editor system prompt.
 
 System prompt adalah instruksi yang diberikan ke AI **sebelum percakapan dimulai** — ini yang menentukan "kepribadian" dan batasan AI kamu.
 
@@ -156,8 +223,7 @@ Jika ada pertanyaan di luar topik AI, arahkan kembali ke topik utama.
 
 > Mengubah system prompt akan menyelesaikan **Side Quest: "Customize the System Prompt"** di Mission Dashboard!
 
-> *Screenshot system prompt editor — COMING SOON!*
-> ![System Prompt Editor](COMING_SOON)
+![System Prompt Editor](images/Web-SystemMessage.png)
 
 ---
 

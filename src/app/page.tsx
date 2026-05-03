@@ -8,8 +8,8 @@ import { Sword, Star, Trophy } from 'lucide-react';
 export default function MissionDashboard() {
   const { quests } = useQuest();
 
-  const mainQuests = [quests.gemini, quests.initialTry, quests.permanentKbConnected, quests.ragTry, quests.serper];
-  const sideQuests = [quests.groq, quests.ollama, quests.fileUploaded, quests.systemMsgChanged, quests.nameChanged];
+  const mainQuests = [quests.gemini, quests.initialTry, quests.permanentKbConnected, quests.ragTry, quests.serper, quests.serperTry];
+  const sideQuests = [quests.groq, quests.ollama, quests.fileUploaded, quests.systemMsgChanged, quests.nameChanged, quests.noneShallPass];
   const completedMain = mainQuests.filter(Boolean).length;
   const completedSide = sideQuests.filter(Boolean).length;
   const totalCount = mainQuests.length + sideQuests.length;
@@ -73,7 +73,7 @@ export default function MissionDashboard() {
               description="Toggle a Permanent Inventory file active in the chatbot."
               isCompleted={quests.permanentKbConnected} isLocked={!quests.initialTry} />
             <QuestContainer title="Communicate with RAG chatbot"
-              description="Send 1 message with a knowledge base active."
+              description="Send 3 messages with a knowledge base active."
               isCompleted={quests.ragTry} isLocked={!quests.permanentKbConnected} />
           </section>
 
@@ -81,6 +81,9 @@ export default function MissionDashboard() {
             <p style={{ fontSize: 8, color: 'var(--aap-sky)', marginBottom: 10, textTransform: 'uppercase' }}>▶ IV. Welcome to the Grid</p>
             <QuestContainer title="Connect to Serper" description="SERPER_API_KEY set in .env.local"
               isCompleted={quests.serper} isLocked={!quests.ragTry} />
+            <QuestContainer title="Use Web Search 3 times"
+              description="Enable Web Search toggle and send 3 messages."
+              isCompleted={quests.serperTry} isLocked={!quests.serper} />
           </section>
         </div>
 
@@ -111,11 +114,21 @@ export default function MissionDashboard() {
               description="Change _YOUR_NAME_ to your real name in the Player Stats page." isCompleted={quests.nameChanged} type="side" />
           </section>
 
+          <section style={{ marginBottom: 20 }}>
+            <p style={{ fontSize: 8, color: '#660000', marginBottom: 10, textTransform: 'uppercase' }}>▶ The Gatekeeper</p>
+            <QuestContainer
+              title="NONE SHALL PASS"
+              description="?????"
+              isCompleted={quests.noneShallPass}
+              type="side"
+            />
+          </section>
+
           {/* Ampera Bridge */}
           <div style={{ position: 'relative', height: 180, border: '4px solid var(--aap-blue)', boxShadow: '4px 4px 0 var(--aap-darkest)', overflow: 'hidden' }}>
             <Image src="/ampera_background.png" alt="Ampera Bridge" fill sizes="100%" style={{ objectFit: 'cover', imageRendering: 'pixelated' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(20,52,100,0.9) 0%, transparent 60%)' }} />
-            <div style={{ position: 'absolute', bottom: 10, left: 0, right: 0, fontSize: 8, color: 'var(--aap-sky)', textAlign: 'center' }}>⛩ AMPERA BRIDGE — PALEMBANG</div>
+            <div style={{ position: 'absolute', bottom: 10, left: 0, right: 0, fontSize: 8, color: 'var(--aap-sky)', textAlign: 'center' }}>AMPERA BRIDGE — PALEMBANG</div>
             {completedCount === totalCount && (
               <div style={{ position: 'absolute', top: 10, right: 10, background: 'var(--aap-amber)', border: '2px solid var(--aap-yellow)', color: 'var(--aap-darkest)', fontSize: 8, padding: '4px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
                 <Trophy size={12} /> ALL CLEAR!

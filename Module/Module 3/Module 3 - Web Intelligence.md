@@ -36,8 +36,9 @@ AI konvensional hanya **menjawab** berdasarkan data yang ada di memori training-
 [LLM memberikan jawaban berdasarkan hasil pencarian terkini]
 ```
 
-> *Diagram Tool Calling — COMING SOON!*
-> ![Diagram Tool Calling](COMING_SOON)
+> *Diagram Tool Calling — lihat gambar di bawah:*
+
+![Workflow Tool Calling](images/Workflow.png)
 
 ---
 
@@ -52,8 +53,7 @@ Serper.dev adalah layanan yang menyediakan akses ke hasil pencarian Google melal
 3. Akun gratis mendapat **2.500 pencarian gratis per bulan** — cukup untuk workshop
 4. Di dashboard, salin **API Key** kamu
 
-> *Screenshot Serper dashboard — COMING SOON!*
-> ![Serper Dashboard](COMING_SOON)
+![Serper Dashboard](images/Serper-Dashboard.png)
 
 ---
 
@@ -139,9 +139,6 @@ Bantu saya debug kode Python ini.
 
 > *Video demo web search — COMING SOON!*
 > [![Demo Web Search Module 3](COMING_SOON)](COMING_SOON)
-
-> *Screenshot hasil web search di chatbot — COMING SOON!*
-> ![Web Search Result](COMING_SOON)
 
 ---
 

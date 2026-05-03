@@ -29,9 +29,6 @@
 | **Otomatis SSL** | HTTPS otomatis tersedia tanpa setup manual |
 | **Preview Deployments** | Setiap branch dapat URL preview tersendiri |
 
-> *Diagram arsitektur Vercel — COMING SOON!*
-> ![Vercel Architecture](COMING_SOON)
-
 ---
 
 ## Persiapan Sebelum Deploy
@@ -84,8 +81,7 @@ Verifikasi `.gitignore` sudah memuat:
 3. Di bagian **"Import Git Repository"**, pilih repository workshop kamu
 4. Vercel akan otomatis mendeteksi bahwa ini adalah proyek Next.js
 
-> *Screenshot import project di Vercel — COMING SOON!*
-> ![Import Project Vercel](COMING_SOON)
+![Vercel Dashboard](images/Vercel-Dashboard.png)
 
 5. **Sebelum klik Deploy**, tambahkan Environment Variables (langkah selanjutnya)
 
@@ -123,8 +119,7 @@ Ini adalah langkah **paling penting** — tanpa ini, API key tidak akan terbaca 
 
 3. Klik **"Deploy"**
 
-> *Screenshot environment variables di Vercel — COMING SOON!*
-> ![Environment Variables Vercel](COMING_SOON)
+![Environment Variables Vercel](images/Vercel-EnvironmentVariables.png)
 
 ### Cara Menambahkan Setelah Deploy (Update Key)
 
@@ -230,7 +225,7 @@ Checklist final:
 
 ---
 
-## 🎉 Selamat! Kamu Telah Menyelesaikan Workshop!
+## Selamat! Kamu Telah Menyelesaikan Workshop!
 
 Kamu sudah berhasil membangun dan men-deploy **AI Quest Dashboard** — sebuah aplikasi web AI full-stack yang nyata, dari nol hingga bisa diakses secara publik.
 

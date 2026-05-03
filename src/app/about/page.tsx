@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useQuest, DEFAULT_PLAYER_NAME } from '@/context/QuestContext';
-import { CheckCircle2, Globe, Database, Cpu, Edit2, Check } from 'lucide-react';
+import { CheckCircle2, Globe, Database, Cpu, Edit2, Check, RotateCcw } from 'lucide-react';
 
 const CHARACTERS = [
   { id: 'male_1',         name: 'The Architect',  role: 'Backend Engineer',  src: '/hero_male_1.png' },
@@ -13,10 +13,11 @@ const CHARACTERS = [
 ];
 
 export default function PlayerStatsPage() {
-  const { quests, playerName, setPlayerName } = useQuest();
-  const [selectedId, setSelectedId] = useState('male_1');
-  const [editingName, setEditingName] = useState(false);
-  const [nameInput,   setNameInput]   = useState(playerName);
+  const { quests, playerName, setPlayerName, resetProgress } = useQuest();
+  const [selectedId,   setSelectedId]   = useState('male_1');
+  const [editingName,  setEditingName]  = useState(false);
+  const [nameInput,    setNameInput]    = useState(playerName);
+  const [confirmReset, setConfirmReset] = useState(false);
   const char = CHARACTERS.find(c => c.id === selectedId) ?? CHARACTERS[0];
 
   const llmPct    = ((quests.gemini ? 1 : 0) + (quests.groq ? 1 : 0) + (quests.ollama ? 1 : 0)) / 3 * 100;
@@ -177,6 +178,51 @@ export default function PlayerStatsPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* RESET PROGRESS */}
+      <div style={{ marginTop: 20, padding: 16, border: '2px dashed var(--aap-slate)', background: 'var(--aap-darkest)' }}>
+        <p style={{ fontSize: 7, color: 'var(--aap-grey-dark)', marginBottom: 12 }}>⚠ DANGER ZONE</p>
+        {!confirmReset ? (
+          <div
+            onClick={() => setConfirmReset(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 10,
+              padding: '10px 14px', cursor: 'pointer', userSelect: 'none',
+              border: '2px solid var(--aap-slate)', background: 'var(--aap-dark2)',
+              color: 'var(--aap-grey-mid)', fontSize: 8,
+            }}
+          >
+            <RotateCcw size={12} />
+            RESET QUEST PROGRESS
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <p style={{ fontSize: 7, color: 'var(--aap-red-bright)' }}>⚠ This will clear all quest progress. Player name is kept. Are you sure?</p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <div
+                onClick={() => { resetProgress(); setConfirmReset(false); }}
+                style={{
+                  flex: 1, padding: '10px 14px', cursor: 'pointer', userSelect: 'none', textAlign: 'center',
+                  border: '2px solid var(--aap-red)', background: 'var(--aap-dark2)',
+                  color: 'var(--aap-red-bright)', fontSize: 8,
+                }}
+              >
+                ✗ YES, RESET
+              </div>
+              <div
+                onClick={() => setConfirmReset(false)}
+                style={{
+                  flex: 1, padding: '10px 14px', cursor: 'pointer', userSelect: 'none', textAlign: 'center',
+                  border: '2px solid var(--aap-slate)', background: 'var(--aap-dark2)',
+                  color: 'var(--aap-grey)', fontSize: 8,
+                }}
+              >
+                ← CANCEL
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -2,39 +2,43 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useQuest, DEFAULT_SYS_MSG } from '@/context/QuestContext';
-import { Send, Upload, Package, Zap, Cpu, Flame, X, ChevronDown, ChevronUp, Lock, RefreshCw } from 'lucide-react';
+import { Send, Upload, Package, Zap, Cpu, Flame, X, ChevronDown, ChevronUp, Lock, RefreshCw, Globe } from 'lucide-react';
 
-type Msg   = { role: 'user' | 'assistant'; content: string };
+type Msg = { role: 'user' | 'assistant'; content: string };
 type PFile = { name: string; content: string };
 type UFile = { id: string; name: string; content: string };
 
 const MODELS = [
-  { id: 'gemini',   label: 'Gemini',        sub: 'Google AI', key: 'gemini' as const,  icon: Zap,     color: '#249fde' },
-  { id: 'groq_120', label: 'GPT-OSS 120B',  sub: 'Groq',      key: 'groq'   as const,  icon: Flame,   color: '#df3e23' },
-  { id: 'groq_20',  label: 'GPT-OSS 20B',   sub: 'Groq',      key: 'groq'   as const,  icon: Flame,   color: '#fa6a0a' },
-  { id: 'llama4',   label: 'Llama 4 Scout', sub: 'Groq',      key: 'groq'   as const,  icon: Cpu,     color: '#d6f264' },
-  { id: 'llama33',  label: 'Llama 3.3 70B', sub: 'Groq',      key: 'groq'   as const,  icon: Cpu,     color: '#9cdb43' },
-  { id: 'llama_8b', label: 'Llama 3.1 8B',  sub: 'Groq',      key: 'groq'   as const,  icon: Cpu,     color: '#59c135' },
-  { id: 'ollama',   label: 'Ollama',         sub: 'Local',     key: 'ollama' as const,  icon: Package, color: '#bc4a9b' },
+  { id: 'gemini', label: 'Gemini', sub: 'Google AI', key: 'gemini' as const, icon: Zap, color: '#249fde' },
+  { id: 'groq_120', label: 'GPT-OSS 120B', sub: 'Groq', key: 'groq' as const, icon: Flame, color: '#df3e23' },
+  { id: 'groq_20', label: 'GPT-OSS 20B', sub: 'Groq', key: 'groq' as const, icon: Flame, color: '#fa6a0a' },
+  { id: 'llama4', label: 'Llama 4 Scout', sub: 'Groq', key: 'groq' as const, icon: Cpu, color: '#d6f264' },
+  { id: 'llama33', label: 'Llama 3.3 70B', sub: 'Groq', key: 'groq' as const, icon: Cpu, color: '#9cdb43' },
+  { id: 'llama_8b', label: 'Llama 3.1 8B', sub: 'Groq', key: 'groq' as const, icon: Cpu, color: '#59c135' },
+  { id: 'ollama', label: 'Ollama', sub: 'Local', key: 'ollama' as const, icon: Package, color: '#bc4a9b' },
 ];
 
 export default function ChatbotPage() {
   const {
-    quests, chatCount,
-    incrementChatCount, incrementRagChatCount,
+    quests, chatCount, ragChatCount, serperChatCount,
+    incrementChatCount, incrementRagChatCount, incrementSerperChatCount,
     markPermanentKbUsed, markFileDirectlyUploaded, markSystemMessageModified,
+    connectOllama,
   } = useQuest();
 
-  const [messages,       setMessages]       = useState<Msg[]>([]);
-  const [input,          setInput]          = useState('');
-  const [selectedModel,  setSelectedModel]  = useState('gemini');
-  const [isThinking,     setIsThinking]     = useState(false);
-  const [error,          setError]          = useState('');
-  const [systemMessage,  setSystemMessage]  = useState(DEFAULT_SYS_MSG);
-  const [sysOpen,        setSysOpen]        = useState(false);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [input, setInput] = useState('');
+  const [selectedModel, setSelectedModel] = useState('gemini');
+  const [isThinking, setIsThinking] = useState(false);
+  const [error, setError] = useState('');
+  const [systemMessage, setSystemMessage] = useState(DEFAULT_SYS_MSG);
+  const [sysOpen, setSysOpen] = useState(false);
   const [permanentFiles, setPermanentFiles] = useState<PFile[]>([]);
-  const [activePermIds,  setActivePermIds]  = useState<Set<string>>(new Set());
-  const [uploadedFiles,  setUploadedFiles]  = useState<UFile[]>([]);
+  const [activePermIds, setActivePermIds] = useState<Set<string>>(new Set());
+  const [uploadedFiles, setUploadedFiles] = useState<UFile[]>([]);
+  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
+  const [lastSearched, setLastSearched] = useState(false);
+  const [ollamaModel, setOllamaModel] = useState<string>('llama3.2');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Load permanent knowledge files on mount
@@ -43,6 +47,19 @@ export default function ChatbotPage() {
       .then(r => r.json())
       .then(d => setPermanentFiles(d.files ?? []));
   }, []);
+
+  // Auto-detect Ollama on mount — finds installed models dynamically
+  useEffect(() => {
+    fetch('/api/ollama-ping')
+      .then(r => r.json())
+      .then(d => {
+        if (d.available && d.model) {
+          setOllamaModel(d.model);
+          connectOllama();
+        }
+      })
+      .catch(() => { /* Ollama not running — silently ignore */ });
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,17 +91,22 @@ export default function ChatbotPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: selectedModel,
-          messages: nextMessages.slice(-10), // last 5 turns
+          messages: nextMessages.slice(-10),
           systemMessage,
           knowledgeBase: anyKbActive ? buildKnowledgeBase() : '',
+          webSearchEnabled: webSearchEnabled && quests.serper,
+          ollamaModel,
         }),
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error ?? 'API error');
       const reply: Msg = { role: 'assistant', content: data.reply };
       setMessages(prev => [...prev, reply]);
+      setLastSearched(!!(data.searchPerformed));
 
-      if (anyKbActive) incrementRagChatCount();
+      // Track which counter to increment
+      if (webSearchEnabled && quests.serper) incrementSerperChatCount();
+      else if (anyKbActive) incrementRagChatCount();
       else incrementChatCount();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -143,7 +165,7 @@ export default function ChatbotPage() {
 
       {/* MODEL SELECTOR */}
       <div style={{ ...panelStyle, padding: 12, flexShrink: 0 }}>
-        <p style={{ fontSize: 9, color: 'var(--aap-yellow)', marginBottom: 10 }}>⚔ SELECT CHAMPION</p>
+        <p style={{ fontSize: 9, color: 'var(--aap-yellow)', marginBottom: 10 }}>SELECT CHAMPION</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 8 }}>
           {MODELS.map(m => {
             const locked = !quests[m.key];
@@ -183,7 +205,7 @@ export default function ChatbotPage() {
           <div>
             <div onClick={() => setSysOpen(p => !p)}
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', marginBottom: 6 }}>
-              <p style={{ fontSize: 8, color: 'var(--aap-yellow)' }}>⚙ SYSTEM MSG</p>
+              <p style={{ fontSize: 8, color: 'var(--aap-yellow)' }}>SYSTEM MESSAGE</p>
               {sysOpen ? <ChevronUp size={12} style={{ color: 'var(--aap-grey)' }} /> : <ChevronDown size={12} style={{ color: 'var(--aap-grey)' }} />}
             </div>
             {sysOpen && (
@@ -199,12 +221,51 @@ export default function ChatbotPage() {
               />
             )}
             {!sysOpen && systemMessage !== DEFAULT_SYS_MSG && (
-              <p style={{ fontSize: 7, color: 'var(--aap-green-lt)' }}>✓ Custom prompt active</p>
+              <p style={{ fontSize: 7, color: 'var(--aap-green-lt)' }}>Custom prompt active</p>
+            )}
+          </div>
+
+          {/* Web Search Toggle */}
+          <div style={{ borderTop: '2px solid var(--aap-slate)', paddingTop: 10 }}>
+            <p style={{ fontSize: 8, color: 'var(--aap-yellow)', marginBottom: 8 }}>WEB SEARCH</p>
+            <div
+              onClick={() => quests.serper && setWebSearchEnabled(p => !p)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px',
+                cursor: quests.serper ? 'pointer' : 'not-allowed',
+                userSelect: 'none',
+                border: `2px solid ${!quests.serper ? 'var(--aap-slate-dark)' : webSearchEnabled ? '#59c135' : 'var(--aap-slate)'}`,
+                background: !quests.serper ? 'var(--aap-darkest)' : webSearchEnabled ? 'rgba(89,193,53,0.12)' : 'var(--aap-dark2)',
+                opacity: quests.serper ? 1 : 0.5,
+                boxShadow: webSearchEnabled && quests.serper ? '0 0 8px rgba(89,193,53,0.4)' : 'none',
+              }}
+            >
+              <Globe size={14} style={{ color: !quests.serper ? 'var(--aap-slate)' : webSearchEnabled ? '#59c135' : 'var(--aap-grey)', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 7, color: !quests.serper ? 'var(--aap-slate)' : webSearchEnabled ? '#59c135' : 'var(--aap-grey-lt)' }}>
+                  {!quests.serper ? 'SERPER NOT SET' : webSearchEnabled ? 'SEARCH ON' : 'SEARCH OFF'}
+                </p>
+                {quests.serper && (
+                  <p style={{ fontSize: 6, color: 'var(--aap-grey-dark)', marginTop: 2 }}>
+                    {serperChatCount}/3 searches
+                  </p>
+                )}
+              </div>
+              {quests.serper && (
+                <div style={{
+                  width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
+                  background: webSearchEnabled ? '#59c135' : 'var(--aap-slate)',
+                  boxShadow: webSearchEnabled ? '0 0 6px #59c135' : 'none',
+                }} />
+              )}
+            </div>
+            {lastSearched && webSearchEnabled && (
+              <p style={{ fontSize: 7, color: '#59c135', marginTop: 4 }}>✦ Web search used</p>
             )}
           </div>
 
           <div style={{ borderTop: '2px solid var(--aap-slate)', paddingTop: 10 }}>
-            <p style={{ fontSize: 8, color: 'var(--aap-yellow)', marginBottom: 8 }}>📦 PERMANENT INVENTORY</p>
+            <p style={{ fontSize: 8, color: 'var(--aap-yellow)', marginBottom: 8 }}>PERMANENT INVENTORY</p>
             {permanentFiles.length === 0
               ? <p style={{ fontSize: 7, color: 'var(--aap-grey-dark)' }}>No files in /public/knowledge/</p>
               : permanentFiles.map(f => {
@@ -228,7 +289,7 @@ export default function ChatbotPage() {
           </div>
 
           <div style={{ borderTop: '2px solid var(--aap-slate)', paddingTop: 10 }}>
-            <p style={{ fontSize: 8, color: 'var(--aap-yellow)', marginBottom: 8 }}>📤 UPLOAD FILE</p>
+            <p style={{ fontSize: 8, color: 'var(--aap-yellow)', marginBottom: 8 }}>UPLOAD FILE</p>
             <label style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               padding: '8px', cursor: 'pointer',
@@ -257,7 +318,8 @@ export default function ChatbotPage() {
             <p style={{ fontSize: 20, color: 'var(--aap-yellow)' }}>
               {chatCount} <span style={{ color: 'var(--aap-slate)', fontSize: 12 }}>/ 3</span>
             </p>
-            {anyKbActive && <p style={{ fontSize: 7, color: 'var(--aap-green-lt)', marginTop: 4 }}>✦ RAG ACTIVE</p>}
+            {anyKbActive && <p style={{ fontSize: 7, color: 'var(--aap-green-lt)', marginTop: 4 }}>RAG: {ragChatCount}/3</p>}
+            {quests.serper && <p style={{ fontSize: 7, color: '#59c135', marginTop: 2 }}>WEB: {serperChatCount}/3</p>}
           </div>
         </div>
 
